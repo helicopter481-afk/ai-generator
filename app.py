@@ -8,10 +8,10 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = Flask(__name__)
-app.secret_key = "content-generator-secret-key"
+app.secret_key = os.getenv("SECRET_KEY", "content-generator-secret-key")
 
 # Password untuk akses (satu password saja - tidak bisa diubah)
-PASSWORD = "ayomulai123"  # ← GANTI DENGAN PASSWORD ANDA
+PASSWORD = os.getenv("PASSWORD", "ayomulai123")
 
 def build_prompt(usaha, audiens, platform, gaya):
     gaya_detail = {
