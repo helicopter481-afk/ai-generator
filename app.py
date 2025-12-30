@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from dotenv import load_dotenv
 from groq import Groq
 import os
@@ -8,6 +8,10 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = Flask(__name__)
+app.secret_key = "content-generator-secret-key"
+
+# Password untuk akses (satu password saja - tidak bisa diubah)
+PASSWORD = "ayomulai123"  # ← GANTI DENGAN PASSWORD ANDA
 
 def build_prompt(usaha, audiens, platform, gaya):
     gaya_detail = {
@@ -111,14 +115,34 @@ PENTING: Setiap output harus JELAS TERASA BERBEDA karena gaya {gaya}. Jangan sam
 """
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form.get("password")
+        if password == PASSWORD:
+            session["authenticated"] = True
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", error="Password salah!")
+    return render_template("login.html")
+
 @app.route("/")
 def index():
+    if not session.get("authenticated"):
+        return redirect(url_for("login"))
     return render_template("index.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 @app.route("/generate", methods=["POST"])
 def generate():
-    data = request.json
+    if not session.get("authenticated"):
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
     
+    data = request.json
     # Validasi input
     if not all([data.get("usaha"), data.get("audiens"), data.get("platform"), data.get("gaya")]):
         return jsonify({
