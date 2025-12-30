@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Generator - Hook & Caption Viral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .gradient-hover {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gradient-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(217, 119, 6, 0.3);
+        }
+        
+        .input-field {
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .result-card:hover .btn-copy {
+            opacity: 1;
+        }
+        
+        .result-card {
+            background: #f8f9ff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            border-color: #d97706;
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.1);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .badge-section {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #d9770620 0%, #f59e0b20 100%);
+            color: #d97706;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+            z-index: 50;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        .tab-btn {
+            padding: 8px 16px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            border-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <!-- Clean background - no floating elements -->
+
+    <div class="relative z-10 min-h-screen flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-8 gap-6 lg:gap-8">
+        
+        <!-- Left Section -->
+        <div class="w-full lg:w-1/2 max-w-xl">
+            <div class="mb-8">
+                <div class="flex flex-col sm:flex-row lg:flex-col items-center sm:items-start lg:items-center gap-4 mb-6 lg:text-center">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-2xl flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        <img src="/static/images/logo.png" alt="Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center sm:text-left lg:text-center">
+                        <h1 class="text-3xl sm:text-4xl font-bold" style="font-family: 'Playfair Display', serif; color: #0f172a;">
+                            ContentHub
+                        </h1>
+                        <p class="text-sm text-slate-500 mt-1">Generator Hook & Caption Viral</p>
+                    </div>
+                </div>
+                <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6 text-center sm:text-left lg:text-center">
+                    Nggak perlu pusing lagi mikir caption. Ketik produk Anda, jadi dalam hitungan detik. Copy-paste, langsung posting ke semua platform. <span class="font-semibold text-slate-800">Mudah banget, engagement naik!</span>
+                </p>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                    <div class="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-200">
+                        <div class="text-2xl sm:text-3xl font-bold" style="color: #0f172a;">5+</div>
+                        <p class="text-xs text-slate-600 mt-1">Tipe Hook</p>
+                    </div>
+                    <div class="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-200">
+                        <div class="text-2xl sm:text-3xl font-bold" style="color: #0f172a;">3</div>
+                        <p class="text-xs text-slate-600 mt-1">Varian Caption</p>
+                    </div>
+                    <div class="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-200">
+                        <div class="text-2xl sm:text-3xl font-bold" style="color: #0f172a;">∞</div>
+                        <p class="text-xs text-slate-600 mt-1">Ide Konten</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section - Form -->
+        <div class="w-full lg:w-1/2 max-w-lg">
+            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-slate-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-6">Mulai Membuat Konten</h2>
+                
+                <form onsubmit="event.preventDefault(); generateContent();" class="space-y-4">
+                    <!-- Input Usaha -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                            <i class="fas fa-briefcase mr-2" style="color: #d97706;"></i>Jenis Usaha / Produk
+                        </label>
+                        <input 
+                            id="usaha" 
+                            type="text"
+                            class="input-field w-full text-sm"
+                            placeholder="Contoh: Kopi Premium, Tas Kulit, Jasa Desain"
+                            required
+                        >
+                    </div>
+
+                    <!-- Input Audiens -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                            <i class="fas fa-users mr-2" style="color: #d97706;"></i>Target Audiens
+                        </label>
+                        <input 
+                            id="audiens" 
+                            type="text"
+                            class="input-field w-full text-sm"
+                            placeholder="Contoh: Gen Z, Ibu rumah tangga, Mahasiswa"
+                            required
+                        >
+                    </div>
+
+                    <!-- Select Platform -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                                <i class="fas fa-video mr-2" style="color: #d97706;"></i>Platform
+                            </label>
+                            <select id="platform" class="input-field w-full text-sm" required>
+                                <option value="">Pilih Platform...</option>
+                                <option value="Instagram">📸 Instagram</option>
+                                <option value="TikTok">🎬 TikTok</option>
+                                <option value="WhatsApp">💬 WhatsApp</option>
+                                <option value="Facebook">👥 Facebook</option>
+                                <option value="LinkedIn">💼 LinkedIn</option>
+                            </select>
+                        </div>
+
+                        <!-- Select Gaya -->
+                        <div>
+                            <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                                <i class="fas fa-pen-fancy mr-2" style="color: #d97706;"></i>Gaya Bahasa
+                            </label>
+                            <select id="gaya" class="input-field w-full text-sm" required>
+                                <option value="">Pilih Gaya...</option>
+                                <option value="Santai">😎 Santai</option>
+                                <option value="Profesional">🎯 Profesional</option>
+                                <option value="Promosi">🔥 Promosi</option>
+                                <option value="Edukatif">📚 Edukatif</option>
+                                <option value="Humoris">😄 Humoris</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                    <button 
+                        type="submit" 
+                        id="submitBtn"
+                        class="w-full gradient-hover text-white font-bold py-3 rounded-xl mt-6 flex items-center justify-center gap-2 text-sm sm:text-base"
+                        style="background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);"
+                    >
+                        <i class="fas fa-magic"></i>
+                        <span>Buat Konten Sekarang</span>
+                    </button>
+                </form>
+
+                <div class="mt-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p class="text-xs sm:text-sm text-slate-600">
+                        <i class="fas fa-lightbulb text-blue-600 mr-2"></i>
+                        <strong>Tips:</strong> Semakin spesifik input Anda, semakin baik hasil yang dihasilkan!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Section -->
+    <div id="outputSection" class="fixed inset-0 bg-black/50 hidden z-50 overflow-y-auto p-3 sm:p-4" onclick="closeOutput(event)">
+        <div class="relative bg-white rounded-2xl max-w-4xl mx-auto my-4 sm:my-8 shadow-2xl" onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div class="gradient-primary p-4 sm:p-6 text-white rounded-t-2xl flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <i class="fas fa-star text-yellow-300 text-lg sm:text-2xl flex-shrink-0"></i>
+                    <h2 class="text-lg sm:text-2xl font-bold truncate">Hasil Konten Anda</h2>
+                </div>
+                <button onclick="closeOutput()" class="text-white hover:bg-white/20 p-2 rounded-lg transition flex-shrink-0">
+                    <i class="fas fa-times text-lg sm:text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-4 sm:p-8 space-y-6">
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-8 sm:py-12">
+                    <div class="inline-block mb-4">
+                        <div class="loading-spinner" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                    </div>
+                    <p class="text-slate-600 font-medium text-sm sm:text-base">Membuat konten yang sempurna...</p>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-2">Tunggu sebentar, sedang berkomunikasi dengan AI</p>
+                </div>
+
+                <!-- Content State -->
+                <div id="contentState" class="hidden space-y-6">
+                    <!-- Tabs -->
+                    <div class="flex gap-2 border-b border-slate-200 pb-4 overflow-x-auto">
+                        <button onclick="switchTab('hooks')" class="tab-btn active text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-fire mr-1 sm:mr-2"></i><span class="hidden sm:inline">Hook</span>
+                        </button>
+                        <button onclick="switchTab('caption')" class="tab-btn text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-pen mr-1 sm:mr-2"></i><span class="hidden sm:inline">Caption</span>
+                        </button>
+                        <button onclick="switchTab('cta')" class="tab-btn text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-bullseye mr-1 sm:mr-2"></i><span class="hidden sm:inline">CTA</span>
+                        </button>
+                    </div>
+
+                    <!-- Hooks Tab -->
+                    <div id="hooksList" class="tab-content fade-in space-y-3">
+                        <div class="badge-section">🔥 Hook Pembuka - Tarik Perhatian</div>
+                        <div id="hooksOutput" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Captions Tab -->
+                    <div id="captionsList" class="tab-content hidden fade-in space-y-4">
+                        <div>
+                            <div class="badge-section">⚡ Super Singkat</div>
+                            <div class="result-card group relative">
+                                <p id="captionSuper" class="text-sm sm:text-base text-slate-800 leading-relaxed"></p>
+                                <button onclick="copyResult('captionSuper')" class="btn-copy absolute top-2 right-2 bg-purple-600 hover:bg-purple-700 text-white px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm transition">
+                                    <i class="fas fa-copy mr-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="badge-section">📝 Normal (Recommended)</div>
+                            <div class="result-card group relative">
+                                <p id="captionNormal" class="text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-wrap"></p>
+                                <button onclick="copyResult('captionNormal')" class="btn-copy absolute top-2 right-2 bg-purple-600 hover:bg-purple-700 text-white px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm transition">
+                                    <i class="fas fa-copy mr-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="badge-section">✍️ Singkat</div>
+                            <div class="result-card group relative">
+                                <p id="captionSingkat" class="text-sm sm:text-base text-slate-800 leading-relaxed"></p>
+                                <button onclick="copyResult('captionSingkat')" class="btn-copy absolute top-2 right-2 bg-purple-600 hover:bg-purple-700 text-white px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm transition">
+                                    <i class="fas fa-copy mr-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Tab -->
+                    <div id="ctaList" class="tab-content hidden fade-in space-y-3">
+                        <div class="badge-section">🎯 Call To Action - Ajakan Bertindak</div>
+                        <div id="ctaOutput" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Copy All Button -->
+                    <div class="pt-4 border-t border-slate-200">
+                        <button onclick="copyAll()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2 sm:py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm sm:text-base">
+                            <i class="fas fa-copy"></i>Copy Semua Hasil
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" class="hidden text-center py-6 sm:py-8">
+                    <i class="fas fa-exclamation-circle text-red-600 text-3xl sm:text-4xl mb-4"></i>
+                    <p id="errorMessage" class="text-red-600 font-medium text-sm sm:text-base"></p>
+                    <button onclick="closeOutput()" class="mt-4 px-4 sm:px-6 py-2 bg-red-600 text-white text-sm sm:text-base rounded-lg hover:bg-red-700 transition">
+                        Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+
+        function generateContent() {
+            const usaha = document.getElementById("usaha").value.trim();
+            const audiens = document.getElementById("audiens").value.trim();
+            const platform = document.getElementById("platform").value;
+            const gaya = document.getElementById("gaya").value;
+
+            // Validasi
+            if (!usaha || !audiens || !platform || !gaya) {
+                alert("Semua field harus diisi!");
+                return;
+            }
+
+            // Show modal
+            document.getElementById("outputSection").classList.remove("hidden");
+            document.getElementById("loadingState").classList.remove("hidden");
+            document.getElementById("contentState").classList.add("hidden");
+            document.getElementById("errorState").classList.add("hidden");
+
+            // Disable button
+            document.getElementById("submitBtn").disabled = true;
+            document.getElementById("submitBtn").style.opacity = "0.6";
+
+            fetch("/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ usaha, audiens, platform, gaya })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Gagal membuat konten");
+                return res.json();
+            })
+            .then(result => {
+                if (result.status !== "ok") {
+                    throw new Error(result.message || "Terjadi kesalahan");
+                }
+
+                currentData = result.data;
+                displayResults(result.data);
+                document.getElementById("loadingState").classList.add("hidden");
+                document.getElementById("contentState").classList.remove("hidden");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("loadingState").classList.add("hidden");
+                document.getElementById("errorState").classList.remove("hidden");
+                document.getElementById("errorMessage").textContent = error.message || "Terjadi kesalahan saat membuat konten";
+            })
+            .finally(() => {
+                document.getElementById("submitBtn").disabled = false;
+                document.getElementById("submitBtn").style.opacity = "1";
+            });
+        }
+
+        function displayResults(data) {
+            // Hooks
+            const hooksHtml = data.hooks
+                .map(hook => `<div class="result-card group relative"><p class="text-slate-800">"${hook}"</p><button onclick="copyText('${hook}')" class="btn-copy absolute top-2 right-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm transition"><i class="fas fa-copy mr-1"></i>Copy</button></div>`)
+                .join("");
+            document.getElementById("hooksOutput").innerHTML = hooksHtml;
+
+            // Captions
+            document.getElementById("captionSuper").textContent = data.caption_super || "—";
+            document.getElementById("captionNormal").textContent = data.caption_normal || "—";
+            document.getElementById("captionSingkat").textContent = data.caption_singkat || "—";
+
+            // CTA
+            const ctaHtml = data.cta
+                .map(c => `<div class="result-card group relative"><p class="text-slate-800">"${c}"</p><button onclick="copyText('${c}')" class="btn-copy absolute top-2 right-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm transition"><i class="fas fa-copy mr-1"></i>Copy</button></div>`)
+                .join("");
+            document.getElementById("ctaOutput").innerHTML = ctaHtml;
+        }
+
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+
+            // Show selected tab
+            if (tab === "hooks") {
+                document.getElementById("hooksList").classList.remove("hidden");
+                event.target.closest(".tab-btn").classList.add("active");
+            } else if (tab === "caption") {
+                document.getElementById("captionsList").classList.remove("hidden");
+                event.target.closest(".tab-btn").classList.add("active");
+            } else if (tab === "cta") {
+                document.getElementById("ctaList").classList.remove("hidden");
+                event.target.closest(".tab-btn").classList.add("active");
+            }
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Tersalin ke clipboard!");
+            });
+        }
+
+        function copyResult(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent || element.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Tersalin ke clipboard!");
+            });
+        }
+
+        function copyAll() {
+            if (!currentData) return;
+            
+            let allText = "📱 HOOK PEMBUKA\n" + currentData.hooks.join("\n") + "\n\n";
+            allText += "📝 CAPTION SUPER SINGKAT\n" + currentData.caption_super + "\n\n";
+            allText += "✍️ CAPTION SINGKAT\n" + currentData.caption_singkat + "\n\n";
+            allText += "📄 CAPTION NORMAL\n" + currentData.caption_normal + "\n\n";
+            allText += "🎯 CTA\n" + currentData.cta.join("\n");
+            
+            navigator.clipboard.writeText(allText).then(() => {
+                showToast("Semua konten tersalin!");
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement("div");
+            toast.className = "copy-toast";
+            toast.innerHTML = `<i class="fas fa-check mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = "slideIn 0.3s ease reverse";
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        function closeOutput(event) {
+            if (event && event.target.id !== "outputSection") return;
+            document.getElementById("outputSection").classList.add("hidden");
+            switchTab("hooks"); // Reset to first tab
+        }
+
+        // Keyboard shortcut to close
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeOutput();
+        });
+    </script>
+</body>
+
+</html>
